@@ -37,7 +37,7 @@ function getdata() {
 }
 
 bot.onText(/(\/start|\/help)/, (msg) => {
-  bot.sendMessage(msg.chat.id, "Hello,\nthis is a bot that sends party hard songs when you type /partyhard.\nIf you want to send a song write /newsong [Name]_[Youtube link] (write \"_\" after the Name don't write a space, if you do that it won't work)");
+  bot.sendMessage(msg.chat.id, "Hello,\nthis is a bot that sends party hard songs when you type /partyhard.\nIf you want to send a song write /newsong [Name]€[Youtube link] (write \"€\" after the Name don't write a space, if you do that it won't work)");
   getdata();
 });
 
@@ -50,7 +50,29 @@ bot.onText(/\/partyhard/, (msg) => {
 
 bot.onText(/\/newsong (.+)/, (msg, match) => {
     getdata();
-    var namelink = match[1].split("_");
+    var namelink = match[1].split("€");
+    var shit = true;
+    var data = {
+     name: namelink[0],
+     link: namelink[1]
+   }
+   if (data.link.substring(0,29) == "https://www.youtube.com/watch" || data.link.substring(0,16) == "https://youtu.be") shit = false;
+    for (var i = 0; i < Links.length; i++) {
+      if (data.link == Links[i]) shit = true;
+      if (data.name == Names[i]) shit = true;
+    }
+    if (shit === false) {
+     ref.push(data);
+     bot.sendMessage(msg.chat.id, "Your song was saved");
+   } else {
+     bot.sendMessage(msg.chat.id, "Failed");
+     setTimeout(function(){bot.sendMessage(msg.chat.id, "Maybe another user send that song or the link is wrong");}, 100);
+   }
+});
+
+bot.onText(/\/newsong@InfoPartyHardBot (.+)/, (msg, match) => {
+    getdata();
+    var namelink = match[1].split("€");
     var shit = true;
     var data = {
      name: namelink[0],
