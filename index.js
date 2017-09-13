@@ -17,8 +17,8 @@ firebase.initializeApp({
 const database = firebase.database();
 const ref = database.ref('songs');
 
-const Names = [];
-const Links = [];
+var Names = [];
+var Links = [];
 
 function getdata() {
   ref.once('value', data => {
