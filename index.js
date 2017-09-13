@@ -38,7 +38,7 @@ function getdata() {
 
 bot.onText(/(\/start|\/help)/, (msg) => {
   getdata();
-  bot.sendMessage(msg.chat.id, "Hello,\nthis is a bot that sends party hard songs when you type /partyhard.\nIf you want to send a song write /sendsong [Name]_[Youtube link] (Write \"_\" after the Name don't write a space, if you do that it won't work)");
+  bot.sendMessage(msg.chat.id, "Hello,\nthis is a bot that sends party hard songs when you type /partyhard.\nIf you want to send a song write /newsong [Name]_[Youtube link] (Write \"_\" after the Name don't write a space, if you do that it won't work)");
 });
 
 bot.onText(/\/partyhard/, (msg) => {
