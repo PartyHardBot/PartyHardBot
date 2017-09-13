@@ -37,7 +37,7 @@ function getdata() {
 }
 
 bot.onText(/(\/start|\/help)/, (msg) => {
-  bot.sendMessage(msg.chat.id, "Hello,\nthis is a bot that sends party hard songs when you type /partyhard.\nIf you want to send a song write /newsong [Name]€[Youtube link] (write \"€\" after the Name don't write a space, if you do that it won't work)");
+  bot.sendMessage(msg.chat.id, "Hello,\nthis is a bot that sends party hard songs when you type /partyhard.\nIf you want to send a song write /newsong [Name]\\[Youtube link] (write \"\\\" after the Name don't write a space, if you do that it won't work)");
   getdata();
 });
 
@@ -50,7 +50,7 @@ bot.onText(/\/partyhard/, (msg) => {
 
 bot.onText(/\/newsong (.+)/, (msg, match) => {
     getdata();
-    var namelink = match[1].split("€");
+    var namelink = match[1].split("\");
     var shit = true;
     var data = {
      name: namelink[0],
@@ -72,7 +72,7 @@ bot.onText(/\/newsong (.+)/, (msg, match) => {
 
 bot.onText(/\/newsong@InfoPartyHardBot (.+)/, (msg, match) => {
     getdata();
-    var namelink = match[1].split("€");
+    var namelink = match[1].split("\");
     var shit = true;
     var data = {
      name: namelink[0],
