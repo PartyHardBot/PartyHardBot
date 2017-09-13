@@ -21,7 +21,7 @@ const Names = [];
 const Links = [];
 
 function getdata() {
-  ref.on('value', data => {
+  ref.once('value', data => {
     Names = [];
     Links = [];
     var songs = data.val();
