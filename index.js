@@ -50,7 +50,7 @@ bot.onText(/\/partyhard/, (msg) => {
 
 bot.onText(/\/newsong (.+)/, (msg, match) => {
     getdata();
-    var namelink = match[1].split("\");
+    var namelink = match[1].split("\\");
     var shit = true;
     var data = {
      name: namelink[0],
@@ -72,7 +72,7 @@ bot.onText(/\/newsong (.+)/, (msg, match) => {
 
 bot.onText(/\/newsong@InfoPartyHardBot (.+)/, (msg, match) => {
     getdata();
-    var namelink = match[1].split("\");
+    var namelink = match[1].split("\\");
     var shit = true;
     var data = {
      name: namelink[0],
