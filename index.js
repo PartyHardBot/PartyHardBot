@@ -53,7 +53,7 @@ bot.onText(/(\/newsong@InfoPartyHardBot (.+)|\/newsong (.+))/, (msg, match) => {
     var space = match[1].lastIndexOf(" ");
     var shit = true;
     var data = {
-     name: match[1].substring(match[1].indexOf(" ")+1,space-1),
+     name: match[1].substring(match[1].indexOf(" ")+1,space),
      link: match[1].substring(space+1,match[1].length),
    }
    if (data.link.substring(0,29) == "https://www.youtube.com/watch" || data.link.substring(0,16) == "https://youtu.be") shit = false;
