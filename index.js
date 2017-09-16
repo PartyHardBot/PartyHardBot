@@ -15,7 +15,7 @@ firebase.initializeApp({
 });
 
 const database = firebase.database();
-const ref = database.ref('videos');
+const ref = database.ref('songs');
 
 var Names = [];
 var Links = [];
@@ -24,14 +24,12 @@ function getdata() {
   ref.on('value', data => {
     Names = [];
     Links = [];
-    var videos = data.val();
-    var keys = Object.keys(videos);
-    console.log(keys);
+    var songs = data.val();
+    var keys = Object.keys(songs);
     for (var i = 0; i < keys.length; i++) {
       var k = keys[i];
-      Names.push(videos[k].name);
-      Links.push(videos[k].link);
-      console.log(videos[k].name,videos[k].link);
+      Names.push(songs[k].name);
+      Links.push("https://youtu.be/"+songs[k].id);
     }
   });
 }
@@ -49,23 +47,23 @@ bot.onText(/\/partyhard/, (msg) => {
 });
 
 bot.onText(/(\/newsong@InfoPartyHardBot (.+)|\/newsong (.+))/, (msg, match) => {
-    getdata();
-    var space = match[1].lastIndexOf(" ");
-    var shit = true;
-    var data = {
-     name: match[1].substring(match[1].indexOf(" ")+1,space),
-     link: match[1].substring(space+1,match[1].length),
-   }
-   if (data.link.substring(0,29) == "https://www.youtube.com/watch" || data.link.substring(0,16) == "https://youtu.be") shit = false;
-    for (var i = 0; i < Links.length; i++) {
-      if (data.link == Links[i]) shit = true;
-      if (data.name == Names[i]) shit = true;
-    }
-    if (shit === false) {
-     ref.push(data);
-     bot.sendMessage(msg.chat.id, "Your song was saved");
-   } else {
-     bot.sendMessage(msg.chat.id, "Failed");
-     setTimeout(function(){bot.sendMessage(msg.chat.id, "Maybe another user send that song or the link is wrong");}, 100);
-   }
+  getdata();
+  var link = match[1].substring(match[1].lastIndexOf(" ")+1,match[1].length);
+  var name = match[1].substring(match[1].indexOf(" ")+1,match[1].lastIndexOf(" "));
+  var exists = false;
+  var youtube = false;
+  if (link.substring(0,29) == "https://www.youtube.com/watch" || link.substring(0,16) == "https://youtu.be") youtube = true;
+  for (var i = 0; i < Links.length; i++) {
+    if (link == Links[i] || name == Names[i]) exists = true;
+  }
+  if (exists === false && youtube === true) {
+    ref.push(data = {
+      name,
+      id: link.substring(link.length-11,link.length),
+    });
+    bot.sendMessage(msg.chat.id, "Your song was saved");
+  } else {
+    bot.sendMessage(msg.chat.id, "Failed");
+    setTimeout(function(){bot.sendMessage(msg.chat.id, "Maybe another user send that song or the link is wrong");}, 100);
+  }
 });
