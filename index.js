@@ -15,7 +15,7 @@ firebase.initializeApp({
 });
 
 const database = firebase.database();
-const ref = database.ref('songs');
+const ref = database.ref('videos');
 
 var Names = [];
 var Links = [];
