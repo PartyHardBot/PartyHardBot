@@ -18,18 +18,18 @@ const database = firebase.database();
 const ref = database.ref('songs');
 
 var Names = [];
-var Links = [];
+var Ids = [];
 
 function getdata() {
   ref.on('value', data => {
     Names = [];
-    Links = [];
-    var songs = data.val();
-    var keys = Object.keys(songs);
-    for (var i = 0; i < keys.length; i++) {
-      var k = keys[i];
+    Ids = [];
+    let songs = data.val();
+    let keys = Object.keys(songs);
+    for (let i = 0; i < keys.length; i++) {
+      let k = keys[i];
       Names.push(songs[k].name);
-      Links.push("https://youtu.be/"+songs[k].id);
+      Ids.push(songs[k].id);
     }
   });
 }
@@ -41,25 +41,28 @@ bot.onText(/(\/start|\/help)/, (msg) => {
 
 bot.onText(/\/partyhard/, (msg) => {
   getdata();
-  var video = Math.floor((Math.random() * Links.length));
-  bot.sendMessage(msg.chat.id, Names[video]);
-  setTimeout(function(){bot.sendMessage(msg.chat.id, Links[video]);}, 100);
+  let video = Math.floor((Math.random() * Ids.length));
+  if (Ids[0] != null) {
+    bot.sendMessage(msg.chat.id, Names[video]);
+    setTimeout(function(){bot.sendMessage(msg.chat.id, "youtu.be/"+Ids[video]);}, 100);
+  }
 });
 
 bot.onText(/(\/newsong@InfoPartyHardBot (.+)|\/newsong (.+))/, (msg, match) => {
   getdata();
-  var link = match[1].substring(match[1].lastIndexOf(" ")+1,match[1].length);
-  var name = match[1].substring(match[1].indexOf(" ")+1,match[1].lastIndexOf(" "));
-  var exists = false;
-  var youtube = false;
-  if (link.substring(0,29) == "https://www.youtube.com/watch" || link.substring(0,16) == "https://youtu.be") youtube = true;
-  for (var i = 0; i < Links.length; i++) {
-    if (link == Links[i] || name == Names[i]) exists = true;
+  let link = match[1].substring(match[1].lastIndexOf(" ")+1,match[1].length);
+  let id = link.substring(link.length-11,link.length);
+  let name = match[1].substring(match[1].indexOf(" ")+1,match[1].lastIndexOf(" "));
+  let exists = false;
+  let youtube = false;
+  if (link.substring(0,24) == "https://www.youtube.com/" || link.substring(0,16) == "https://youtu.be" || link.substring(0,15) == "http://youtu.be" || link.substring(0,23) == "http://www.youtube.com/") youtube = true;
+  for (let i = 0; i < Ids.length; i++) {
+    if (id == Ids[i] || name == Names[i]) exists = true;
   }
   if (exists === false && youtube === true) {
     ref.push(data = {
       name,
-      id: link.substring(link.length-11,link.length),
+      id
     });
     bot.sendMessage(msg.chat.id, "Your song was saved");
   } else {
