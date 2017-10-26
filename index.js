@@ -44,7 +44,7 @@ bot.onText(/\/partyhard/, (msg) => {
   let video = Math.floor((Math.random() * Ids.length));
   if (Ids[0] != null) {
     bot.sendMessage(msg.chat.id, Names[video]);
-    setTimeout(function(){bot.sendMessage(msg.chat.id, "youtu.be/"+Ids[video]);}, 100);
+    setTimeout(function(){bot.sendMessage(msg.chat.id, "https://youtu.be/"+Ids[video]);}, 100);
   }
 });
 
