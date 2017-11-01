@@ -20,6 +20,10 @@ const ref = database.ref('songs');
 var Names = [];
 var Ids = [];
 
+ref.on('value', data => {
+  getdata();
+});
+
 function getdata() {
   ref.on('value', data => {
     Names = [];
@@ -42,10 +46,8 @@ bot.onText(/(\/start|\/help)/, (msg) => {
 bot.onText(/\/partyhard/, (msg) => {
   getdata();
   let video = Math.floor((Math.random() * Ids.length));
-  if (Ids[0] != null) {
-    bot.sendMessage(msg.chat.id, Names[video]);
-    setTimeout(function(){bot.sendMessage(msg.chat.id, "https://youtu.be/"+Ids[video]);}, 100);
-  }
+  bot.sendMessage(msg.chat.id, Names[video]);
+  setTimeout(function(){bot.sendMessage(msg.chat.id, "https://youtu.be/"+Ids[video]);}, 100);
 });
 
 bot.onText(/(\/newsong@InfoPartyHardBot (.+)|\/newsong (.+))/, (msg, match) => {
@@ -69,4 +71,27 @@ bot.onText(/(\/newsong@InfoPartyHardBot (.+)|\/newsong (.+))/, (msg, match) => {
     bot.sendMessage(msg.chat.id, "Failed");
     setTimeout(function(){bot.sendMessage(msg.chat.id, "Maybe another user send that song or the link is wrong");}, 100);
   }
+});
+
+bot.on("inline_query", msg => {
+  getdata();
+  let results = [];
+    for (let i = 0; i < Names.length; i++) {
+      for (let j = 0; j < Names[i].length; j++) {
+        const searchfor = msg.query.toLowerCase();
+        if (Names[i].substring(j, searchfor.length+j).toLowerCase() == searchfor) {
+          results.push({
+            "type": "article",
+            "id": msg.id + i,
+            "title": Names[i],
+            "input_message_content": {
+              "message_text": "https://youtu.be/" + Ids[i]
+            },
+            "thumb_url": "https://img.youtube.com/vi/"+Ids[i]+"/0.jpg"
+          });
+          break;
+        }
+      }
+    }
+    bot.answerInlineQuery(msg.id, results);
 });
