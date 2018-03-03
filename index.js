@@ -4,6 +4,8 @@ const bot = new TelegramBot(process.env.API_KEY, {
   polling: true
 });
 
+let linktest = /^(https?:\/\/)?(www.)?youtu((.be)|be.com?)\/(watch\?v=)?\S{11}$/;
+
 const firebase = require('firebase');
 firebase.initializeApp({
   apiKey: process.env.FIREBASE_API_KEY,
@@ -46,52 +48,52 @@ bot.onText(/(\/start|\/help)/, (msg) => {
 bot.onText(/\/partyhard/, (msg) => {
   getdata();
   let video = Math.floor((Math.random() * Ids.length));
-  bot.sendMessage(msg.chat.id, Names[video]);
-  setTimeout(function(){bot.sendMessage(msg.chat.id, "https://youtu.be/"+Ids[video]);}, 100);
+  bot.sendMessage(msg.chat.id, Names[video]+"\nhttps://youtu.be/"+Ids[video]);
 });
 
 bot.onText(/(\/newsong@InfoPartyHardBot (.+)|\/newsong (.+))/, (msg, match) => {
   getdata();
-  let link = match[1].substring(match[1].lastIndexOf(" ")+1,match[1].length);
+  let args = match[1].split(" ");
+  let link = args[args.length-1];
   let id = link.substring(link.length-11,link.length);
-  let name = match[1].substring(match[1].indexOf(" ")+1,match[1].lastIndexOf(" "));
+  let name = args.slice(1, args.length-1).join(" ");
   let exists = false;
-  let youtube = false;
-  if (link.substring(0,24) == "https://www.youtube.com/" || link.substring(0,16) == "https://youtu.be" || link.substring(0,15) == "http://youtu.be" || link.substring(0,23) == "http://www.youtube.com/") youtube = true;
+  let youtube = linktest.test(link);
+  if (!linktest.test(link)) bot.sendMessage(msg.chat.id, "Please use a youtube link");
   for (let i = 0; i < Ids.length; i++) {
-    if (id == Ids[i] || name == Names[i]) exists = true;
+    if (id == Ids[i] || name == Names[i]) {
+      exists = true;
+      bot.sendMessage(msg.chat.id, "Another user sent that song");
+    }
   }
-  if (exists === false && youtube === true) {
+  if (!exists && youtube) {
     ref.push(data = {
       name,
       id
     });
     bot.sendMessage(msg.chat.id, "Your song was saved");
-  } else {
-    bot.sendMessage(msg.chat.id, "Failed");
-    setTimeout(function(){bot.sendMessage(msg.chat.id, "Maybe another user send that song or the link is wrong");}, 100);
   }
 });
 
 bot.on("inline_query", msg => {
   getdata();
   let results = [];
-    for (let i = 0; i < Names.length; i++) {
-      for (let j = 0; j < Names[i].length; j++) {
-        const searchfor = msg.query.toLowerCase();
-        if (Names[i].substring(j, searchfor.length+j).toLowerCase() == searchfor) {
-          results.push({
-            "type": "article",
-            "id": msg.id + i,
-            "title": Names[i],
-            "input_message_content": {
-              "message_text": "https://youtu.be/" + Ids[i]
-            },
-            "thumb_url": "https://img.youtube.com/vi/"+Ids[i]+"/0.jpg"
-          });
-          break;
-        }
+  for (let i = 0; i < Names.length; i++) {
+    for (let j = 0; j < Names[i].length; j++) {
+      const searchfor = msg.query.toLowerCase();
+      if (Names[i].substring(j, searchfor.length+j).toLowerCase() == searchfor) {
+        results.push({
+          "type": "article",
+          "id": msg.id + i,
+          "title": Names[i],
+          "input_message_content": {
+            "message_text": Names[i] + "\nhttps://youtu.be/" + Ids[i]
+          },
+          "thumb_url": "https://img.youtube.com/vi/"+Ids[i]+"/0.jpg"
+        });
+        break;
       }
     }
-    bot.answerInlineQuery(msg.id, results);
+  }
+  bot.answerInlineQuery(msg.id, results);
 });
