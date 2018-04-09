@@ -6,7 +6,7 @@ const randomsong = (songs) => {
 const inline = (name, id) => name + "\nhttps://youtu.be/" + id;
 
 module.exports = {
-  start: "Hi,\nI'm a Bot made in node.js that sends songs stored in partyhard.javojav.me, when you write /partyhard.\n If you want to save a song write /newsong [Name of the song] [Youtube link of that song]",
+  start: "Hi,\nI'm a Bot made in node.js that sends songs stored in partyhard.javojav.com, when you write /partyhard.\n If you want to save a song write /newsong [Name of the song] [Youtube link of that song]",
   randomsong: randomsong,
   notyoutube: "Please use a valid youtube link",
   exists: "Another user sent that song",
